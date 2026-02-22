@@ -1,0 +1,398 @@
+[
+  {
+    "gdpval_occupation": "Accountants and Auditors",
+    "bls_occupation": "Accountants and Auditors",
+    "hourly_wage": 44.96,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and aligns directly with the core job functions of preparing and examining financial records, ensuring accuracy and compliance, and conducting audits.",
+    "matched_at": "2026-02-02T15:19:40.473145",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Administrative Services Managers",
+    "bls_occupation": "Administrative Services Managers",
+    "hourly_wage": 60.59,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to managers who plan, direct, and coordinate supportive services such as administrative procedures, records management, mail distribution, and office operations (distinct from the broader combined category that also includes facilities management).",
+    "matched_at": "2026-02-02T15:19:45.780879",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Audio and Video Technicians",
+    "bls_occupation": "Entertainment and Recreation Managers, Except Gambling",
+    "hourly_wage": 41.86,
+    "confidence": "low",
+    "reasoning": "No direct or close BLS title for audio/video technicians appears in the provided list (which is dominated by management, business, computer, and engineering roles). Among the available options, the closest industry context tied to audio/video production and live events is the entertainment/recreation domain, making this the nearest parent-category proxy despite being a different (managerial) job function.",
+    "matched_at": "2026-02-02T15:19:52.618897",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Buyers and Purchasing Agents",
+    "bls_occupation": "Buyers and Purchasing Agents",
+    "hourly_wage": 39.29,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and refers to the same core functions: sourcing and purchasing goods/services, evaluating suppliers, negotiating contracts/prices, and managing procurement activities.",
+    "matched_at": "2026-02-02T15:19:56.515591",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Child, Family, and School Social Workers",
+    "bls_occupation": "Social and Community Service Managers",
+    "hourly_wage": 41.39,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include any direct social worker occupations. Among the available options, the closest in domain and work context is the social services field; therefore the nearest parent/related category available is Social and Community Service Managers, though it is managerial rather than direct practice social work.",
+    "matched_at": "2026-02-02T15:20:00.663542",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Compliance Officers",
+    "bls_occupation": "Compliance Officers",
+    "hourly_wage": 40.86,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to workers who ensure organizations comply with laws, regulations, and internal policies through monitoring, auditing, reporting, and advising on compliance requirements.",
+    "matched_at": "2026-02-02T15:20:03.607730",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Computer and Information Systems Managers",
+    "bls_occupation": "Computer and Information Systems Managers",
+    "hourly_wage": 90.38,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and refers to the same occupation: managers who plan, coordinate, and direct computer-related activities such as IT, information systems, and related technology functions within an organization.",
+    "matched_at": "2026-02-02T15:20:07.447172",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Concierges",
+    "bls_occupation": "Lodging Managers",
+    "hourly_wage": 37.24,
+    "confidence": "low",
+    "reasoning": "Concierges are typically hotel guest-service staff providing information and arranging services for guests. The provided BLS list does not include a direct personal service/concierge or hotel front-desk occupation, so the closest available lodging-related title is Lodging Managers, though it is a higher-level managerial role rather than a direct functional match.",
+    "matched_at": "2026-02-02T15:20:12.544108",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Counter and Rental Clerks",
+    "bls_occupation": "Business Operations Specialists, All Other",
+    "hourly_wage": 44.41,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include any sales/office support or retail customer-service occupations (where 'Counter and Rental Clerks' would normally map). Given the absence of a direct or close clerical/service match, the closest available catch-all category is 'Business Operations Specialists, All Other,' though it is not a strong functional fit.",
+    "matched_at": "2026-02-02T15:20:16.431442",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Customer Service Representatives",
+    "bls_occupation": "Business Operations Specialists, All Other",
+    "hourly_wage": 44.41,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include the direct occupational title \"Customer Service Representatives\" (or a clear sales/office support subgroup where it would normally fall). Among the available options shown, the closest functional catch-all that could encompass customer-facing support roles is \"Business Operations Specialists, All Other,\" though this is an imperfect fit and broader than the intended occupation.",
+    "matched_at": "2026-02-02T15:20:19.976603",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Editors",
+    "bls_occupation": "Managers, All Other",
+    "hourly_wage": 72.06,
+    "confidence": "low",
+    "reasoning": "A direct BLS occupation title for 'Editors' is not present in the provided list. Among the available options, no closely related media/writing category appears, so the closest available parent/umbrella category is the broad residual management grouping 'Managers, All Other,' which can sometimes capture editorial leadership roles when specific editor occupations are unavailable.",
+    "matched_at": "2026-02-02T15:20:23.380160",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Film and Video Editors",
+    "bls_occupation": "Management Occupations",
+    "hourly_wage": 68.15,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include any arts/media production or editing occupations (e.g., Film and Video Editors). Given the available options are limited to management, business/finance, computer/math, and architecture/engineering groups, no semantically appropriate match exists; the closest available choice is a broad parent category.",
+    "matched_at": "2026-02-02T15:20:27.333860",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Financial Managers",
+    "bls_occupation": "Financial Managers",
+    "hourly_wage": 86.76,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to managers who plan, direct, and coordinate an organization\u2019s financial activities (e.g., budgeting, financial reporting, investment activities, and risk management), making the specific BLS occupation \"Financial Managers\" the most appropriate choice over broader management categories.",
+    "matched_at": "2026-02-02T15:20:31.186389",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Financial and Investment Analysts",
+    "bls_occupation": "Financial and Investment Analysts",
+    "hourly_wage": 56.01,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to professionals who analyze financial statements, market/industry trends, and investment opportunities to support investment decisions and financial planning, making it the most specific and semantically aligned BLS occupation.",
+    "matched_at": "2026-02-02T15:20:36.265266",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "First-Line Supervisors of Non-Retail Sales Workers",
+    "bls_occupation": "Sales Managers",
+    "hourly_wage": 77.37,
+    "confidence": "medium",
+    "reasoning": "The GDPVal title covers supervisory responsibility over sales staff (non-retail). In the provided BLS list, there is no explicit 'First-Line Supervisors of Sales Workers' option, so the closest functionally aligned and most specific available title is 'Sales Managers,' which encompasses managing/supervising sales teams and sales activities outside of retail contexts.",
+    "matched_at": "2026-02-02T15:20:40.217824",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "First-Line Supervisors of Office and Administrative Support Workers",
+    "bls_occupation": "Administrative Services Managers",
+    "hourly_wage": 60.59,
+    "confidence": "low",
+    "reasoning": "The GDPVal occupation refers to supervising clerical/administrative support staff. The provided BLS list does not include the direct equivalent (e.g., 'First-Line Supervisors of Office and Administrative Support Workers'), so the closest available title that aligns with overseeing administrative/office functions is 'Administrative Services Managers,' which manages administrative services and office operations (though typically at a higher managerial level than first-line supervision).",
+    "matched_at": "2026-02-02T15:20:44.323810",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "First-Line Supervisors of Police and Detectives",
+    "bls_occupation": "Managers, All Other",
+    "hourly_wage": 72.06,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include protective service occupations or any police/detective supervisor category. Given the options shown are primarily management and related groups, the closest available parent-type match for a first-line supervisory role is the residual management category \"Managers, All Other,\" though it is not a strong semantic/industry match.",
+    "matched_at": "2026-02-02T15:20:48.325293",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "First-Line Supervisors of Production and Operating Workers",
+    "bls_occupation": "Industrial Production Managers",
+    "hourly_wage": 62.11,
+    "confidence": "medium",
+    "reasoning": "The GDPVal occupation describes supervisory responsibility over production/operating workers in manufacturing or similar production settings. Among the provided BLS titles, \"Industrial Production Managers\" is the closest functional match tied to overseeing production operations and production staff; a more exact BLS first-line supervisor title is not available in the list, so this is the best available specific production-management option.",
+    "matched_at": "2026-02-02T15:20:51.789681",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "First-Line Supervisors of Retail Sales Workers",
+    "bls_occupation": "Sales Managers",
+    "hourly_wage": 77.37,
+    "confidence": "medium",
+    "reasoning": "The GDPVal occupation refers to supervising retail sales workers (front-line sales supervision). The provided BLS list does not include the specific BLS occupation for retail first-line supervisors, so the closest functionally related option available is the supervisory sales management category. Among the listed titles, \"Sales Managers\" is the most specific sales-leadership role aligned with directing and supervising sales staff.",
+    "matched_at": "2026-02-02T15:20:56.518540",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "General and Operations Managers",
+    "bls_occupation": "General and Operations Managers",
+    "hourly_wage": 64.0,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and represents the same broad management role overseeing day-to-day operations, coordinating resources, and implementing organizational policies across industries. A more general parent category (e.g., Top Executives) is less specific and not necessary given the direct match.",
+    "matched_at": "2026-02-02T15:21:01.462499",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Industrial Engineers",
+    "bls_occupation": "Industrial Engineers",
+    "hourly_wage": 51.87,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to engineers who improve systems, processes, and productivity in manufacturing and service operations using methods like process optimization, time studies, and workflow analysis.",
+    "matched_at": "2026-02-02T15:21:04.532449",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Lawyers",
+    "bls_occupation": "Business Operations Specialists, All Other",
+    "hourly_wage": 44.41,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include a direct legal occupation such as 'Lawyers' or a relevant parent group like 'Legal Occupations.' Given the available options, the closest functional fallback is a broad professional category; 'Business Operations Specialists, All Other' is the least-wrong catchall for specialized professional services work when no legal category is available.",
+    "matched_at": "2026-02-02T15:21:09.478428",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Mechanical Engineers",
+    "bls_occupation": "Mechanical Engineers",
+    "hourly_wage": 52.92,
+    "confidence": "high",
+    "reasoning": "This is an exact title match in the BLS list and corresponds directly to the occupation performing mechanical system design, analysis, development, and testing across industries.",
+    "matched_at": "2026-02-02T15:21:12.192671",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Medical Secretaries and Administrative Assistants",
+    "bls_occupation": "Medical and Health Services Managers",
+    "hourly_wage": 66.22,
+    "confidence": "low",
+    "reasoning": "The GDPVal title refers to administrative/secretarial support roles in medical settings, but no secretarial/office support BLS titles are available in the provided list. The closest healthcare-administration-related option is the parent healthcare management category, which at least aligns with the medical office context (though it is more managerial than secretarial).",
+    "matched_at": "2026-02-02T15:21:15.676467",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Medical and Health Services Managers",
+    "bls_occupation": "Medical and Health Services Managers",
+    "hourly_wage": 66.22,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and aligns directly in job functions\u2014planning, directing, and coordinating medical and health services within healthcare facilities and organizations\u2014making it the most specific and appropriate BLS occupation.",
+    "matched_at": "2026-02-02T15:21:20.086512",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "News Analysts, Reporters, and Journalists",
+    "bls_occupation": "Management Occupations",
+    "hourly_wage": 68.15,
+    "confidence": "low",
+    "reasoning": "The GDPVal occupation is a media/journalism role, but the provided BLS title list contains no corresponding journalism, media, or communications occupations (e.g., reporters, correspondents, broadcast news analysts). With no direct or semantically similar option available, the closest available parent category from the list is a broad one; however, this is an imperfect fit.",
+    "matched_at": "2026-02-02T15:21:24.329837",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Nurse Practitioners",
+    "bls_occupation": "Medical and Health Services Managers",
+    "hourly_wage": 66.22,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include a direct clinical occupation match for Nurse Practitioners. Among the available options, the closest healthcare-context category is \"Medical and Health Services Managers,\" though it reflects administrative management roles rather than advanced practice clinical nursing, so the fit is weak.",
+    "matched_at": "2026-02-02T15:21:27.679996",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Order Clerks",
+    "bls_occupation": "Business Operations Specialists, All Other",
+    "hourly_wage": 44.41,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include any clerical/administrative support occupations or a direct \"Order Clerks\"-type role. Among the available options, the closest plausible catch-all for non-managerial order-processing/business support work is the broad residual category \"Business Operations Specialists, All Other,\" though this is an imperfect fit because order clerks are typically classified under office/administrative support in BLS systems.",
+    "matched_at": "2026-02-02T15:21:31.619661",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Personal Financial Advisors",
+    "bls_occupation": "Personal Financial Advisors",
+    "hourly_wage": 77.02,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to professionals who provide individualized financial advice and planning services to clients, including investments, retirement, insurance, and tax/estate considerations.",
+    "matched_at": "2026-02-02T15:21:35.094908",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Pharmacists",
+    "bls_occupation": "Medical and Health Services Managers",
+    "hourly_wage": 66.22,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include a direct healthcare practitioner category such as 'Pharmacists.' Among the available options shown, the closest occupation family in the healthcare domain is 'Medical and Health Services Managers,' though it represents management of healthcare services rather than dispensing medications and providing pharmaceutical care.",
+    "matched_at": "2026-02-02T15:21:39.646204",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Private Detectives and Investigators",
+    "bls_occupation": "Claims Adjusters, Examiners, and Investigators",
+    "hourly_wage": 37.87,
+    "confidence": "medium",
+    "reasoning": "The provided BLS list does not include a direct \"Private Detectives and Investigators\" title. The closest functional match is \"Claims Adjusters, Examiners, and Investigators,\" which includes investigative work (fact-finding, interviewing, evidence/document review). While it is more insurance-claims oriented than private investigation, it is the most specific available option that explicitly covers investigator duties.",
+    "matched_at": "2026-02-02T15:21:43.468051",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Producers and Directors",
+    "bls_occupation": "Entertainment and Recreation Managers, Except Gambling",
+    "hourly_wage": 41.86,
+    "confidence": "medium",
+    "reasoning": "\u201cProducers and Directors\u201d are typically managerial/creative leads who plan, coordinate, and oversee productions (film, TV, theater, live events). The provided BLS list does not include a direct specific title for producers/directors, so the closest available category capturing oversight of entertainment productions and related operations is \u201cEntertainment and Recreation Managers, Except Gambling,\u201d rather than general management titles.",
+    "matched_at": "2026-02-02T15:21:47.506448",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Project Management Specialists",
+    "bls_occupation": "Project Management Specialists",
+    "hourly_wage": 51.97,
+    "confidence": "high",
+    "reasoning": "This is an exact title match in the provided BLS list and directly corresponds to the occupation focused on planning, coordinating, and overseeing projects, including scope, schedule, budget, and stakeholder management.",
+    "matched_at": "2026-02-02T15:21:50.360671",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Property, Real Estate, and Community Association Managers",
+    "bls_occupation": "Property, Real Estate, and Community Association Managers",
+    "hourly_wage": 39.77,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and directly corresponds to the same occupation group responsible for managing residential/commercial properties, real estate operations, and homeowner/community associations.",
+    "matched_at": "2026-02-02T15:21:53.831136",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Real Estate Brokers",
+    "bls_occupation": "Property, Real Estate, and Community Association Managers",
+    "hourly_wage": 39.77,
+    "confidence": "medium",
+    "reasoning": "A direct 'Real Estate Brokers' or 'Real Estate Sales Agents' title is not available in the provided BLS list. The closest semantically and industry-aligned option is the real-estate-focused management category, which covers managing real estate operations and transactions more closely than general sales or executive categories.",
+    "matched_at": "2026-02-02T15:21:57.357830",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Real Estate Sales Agents",
+    "bls_occupation": "Property, Real Estate, and Community Association Managers",
+    "hourly_wage": 39.77,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include a direct match such as 'Real Estate Brokers and Sales Agents' or 'Real Estate Sales Agents.' The closest available occupation within the real-estate domain is 'Property, Real Estate, and Community Association Managers,' which is the nearest related category in terms of industry context (real estate) though it differs in primary function (management vs. sales).",
+    "matched_at": "2026-02-02T15:22:01.739609",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Recreation Workers",
+    "bls_occupation": "Entertainment and Recreation Managers, Except Gambling",
+    "hourly_wage": 41.86,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include a direct worker-level occupation like 'Recreation Workers' (e.g., recreation attendants/leaders). The closest available option within the entertainment/recreation domain is the non-gambling entertainment and recreation category, though it is managerial rather than frontline recreation staff.",
+    "matched_at": "2026-02-02T15:22:05.677977",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Registered Nurses",
+    "bls_occupation": "Medical and Health Services Managers",
+    "hourly_wage": 66.22,
+    "confidence": "low",
+    "reasoning": "The provided BLS title list does not include any nursing occupations (e.g., 'Registered Nurses'), so a direct or close clinical-care match is unavailable. The closest healthcare-related option in the list is 'Medical and Health Services Managers,' which is within the same sector (healthcare) but differs in primary functions (management/administration rather than direct patient care).",
+    "matched_at": "2026-02-02T15:22:10.668712",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Sales Managers",
+    "bls_occupation": "Sales Managers",
+    "hourly_wage": 77.37,
+    "confidence": "high",
+    "reasoning": "This is an exact title match. Both refer to managers who plan, direct, and coordinate an organization\u2019s sales activities, including setting sales goals, managing sales teams, and developing sales strategies.",
+    "matched_at": "2026-02-02T15:22:13.675539",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",
+    "bls_occupation": "Market Research Analysts and Marketing Specialists",
+    "hourly_wage": 41.58,
+    "confidence": "low",
+    "reasoning": "The GDPVal occupation is a non-technical wholesale/manufacturing sales representative role, but no specific 'Sales Representatives' (wholesale/manufacturing) occupation appears in the provided BLS title list. Among available options, this is the closest non-managerial, sales-related occupation; manager titles (e.g., Sales Managers) imply supervisory/strategic responsibilities rather than direct sales.",
+    "matched_at": "2026-02-02T15:22:17.632778",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Sales Representatives, Wholesale and Manufacturing, Technical and Scientific Products",
+    "bls_occupation": "Marketing and Sales Managers",
+    "hourly_wage": 79.35,
+    "confidence": "low",
+    "reasoning": "The GDPVal occupation refers to non-managerial wholesale/manufacturing sales representatives specializing in technical/scientific products. No corresponding sales-representative (non-manager) title is available in the provided BLS list, so the closest functionally related option is the sales/marketing management category, which is the nearest available parent-like sales occupation in the list.",
+    "matched_at": "2026-02-02T15:22:23.045270",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Securities, Commodities, and Financial Services Sales Agents",
+    "bls_occupation": "Financial Specialists",
+    "hourly_wage": 48.12,
+    "confidence": "medium",
+    "reasoning": "The GDPVal title refers to sales agents who sell securities, commodities, and other financial services (i.e., brokerage and related financial product sales). The provided BLS list does not include the direct occupation title for securities/commodities sales agents, so the closest available parent grouping within business/financial work is the broad category 'Financial Specialists.'",
+    "matched_at": "2026-02-02T15:22:26.632231",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Shipping, Receiving, and Inventory Clerks",
+    "bls_occupation": "Transportation, Storage, and Distribution Managers",
+    "hourly_wage": 55.77,
+    "confidence": "low",
+    "reasoning": "No clerical/material-records occupation (e.g., shipping/receiving or inventory clerks) appears in the provided BLS title list. The closest available option by functional domain is within transportation/storage/distribution; however, this BLS title is managerial rather than clerical, so the match is only a best-available parent-domain proxy.",
+    "matched_at": "2026-02-02T15:22:31.322606",
+    "model": "gpt-5.2"
+  },
+  {
+    "gdpval_occupation": "Software Developers",
+    "bls_occupation": "Software Developers",
+    "hourly_wage": 69.5,
+    "confidence": "high",
+    "reasoning": "This is an exact title match and the BLS category directly covers workers who design, develop, and maintain software applications and systems, aligning precisely with the GDPVal occupation.",
+    "matched_at": "2026-02-02T15:22:35.333809",
+    "model": "gpt-5.2"
+  }
+]

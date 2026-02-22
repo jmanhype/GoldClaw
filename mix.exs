@@ -30,6 +30,10 @@ defmodule GoldClaw.MixProject do
       {:goldrush, "~> 0.1.9"},
       {:plug_cowboy, "~> 2.0"},
       {:jason, "~> 1.4"},
+      {:plug, "~> 1.15"},
+      {:crypto, "~> 4.0", override: true},
+      {:postgrex, "~> 0.17"},
+      {:ecto_sql, "~> 3.11"},
       {:ex_doc, "~> 0.30", only: :dev, runtime: false}
     ]
   end

@@ -1,0 +1,14 @@
+{
+  "generated_at_utc": "2026-02-21T04:20:50.361Z",
+  "domain": "vaos.sh",
+  "ledger_path": "/Users/speed/.openclaw/workspace/sve/ledger.sqlite",
+  "lead_count": 0,
+  "opportunity_count": 0,
+  "status_counts": {},
+  "transitions_applied": [],
+  "next_actions": [
+    "sales.followup_send",
+    "sales.close_deal"
+  ],
+  "blocker": null
+}

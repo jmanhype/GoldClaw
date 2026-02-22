@@ -1,0 +1,41 @@
+{
+  "run_id": "cw-live-20260221-1",
+  "intent": "pricing_experiment",
+  "classification": "high",
+  "domain": "vaos.sh",
+  "estimated_hours": 6,
+  "max_payment_usdc": 336,
+  "occupation": "Financial and Investment Analysts",
+  "hourly_wage_usdc": 56.01,
+  "confidence": "high",
+  "title": "Conversion-Focused Pricing Experiment for vaos.sh",
+  "description": "Design and execute a pricing experiment focused on optimizing conversion metrics. Analyze historical conversion data, test different price points, A/B test offer framing, and measure impact on closed_won rate.",
+  "objective": "Increase conversion rate from proposal_sent/closed_won by optimizing pricing and offer presentation for vaos.sh services.",
+  "deliverables": [
+    "Conversion rate analysis (baseline)",
+    "Price elasticity study for AI Ops services",
+    "3-variant pricing experiment design",
+    "A/B test framework setup",
+    "Success metrics dashboard"
+  ],
+  "timeline": {
+    "hours_research": 2,
+    "hours_design": 2,
+    "hours_execution": 1,
+    "hours_analysis": 1
+  },
+  "success_criteria": {
+    "conversion_rate_improvement_pct": 15,
+    "closed_won_increase": 2,
+    "payback_period_weeks": 8
+  },
+  "blocking_constraints": [
+    "Requires access to SVE ledger for conversion data",
+    "Requires Stripe integration for payment verification",
+    "Requires webhook access for experiment configuration",
+    "Requires approval for price changes (no untested pricing modifications without oversight)"
+  ],
+  "status": "ready_to_run",
+  "created_at_utc": "2026-02-21T04:30:00Z",
+  "soul_commitment": "All pricing and revenue optimization experiments will track incremental changes, measure actual impact on closed_won rate and conversion metrics, and require explicit approval before deploying untested pricing changes to production."
+}

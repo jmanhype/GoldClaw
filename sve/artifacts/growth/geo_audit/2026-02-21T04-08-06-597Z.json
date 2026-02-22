@@ -1,0 +1,19 @@
+{
+  "generated_at_utc": "2026-02-21T04:08:06.597Z",
+  "domain": "vaos.sh",
+  "wallet_snapshot": {
+    "address": "0xD1Fbc3F18255df94DEB98644653583dD4239D2A1",
+    "credits_usd": 1.63,
+    "balance_usdc": 3.711175,
+    "network": "base"
+  },
+  "domain_check": {
+    "available": null,
+    "registered": null
+  },
+  "domain_dns": [],
+  "errors": [
+    "domain_check_failed:Conway API error: GET /v1/domains/search?query=vaos.sh -> 404: 404 Not Found",
+    "domain_dns_failed:Conway API error: GET /v1/domains/vaos.sh/dns -> 404: 404 Not Found"
+  ]
+}
