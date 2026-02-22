@@ -1,0 +1,26 @@
+app = "goldclaw-mothership"
+primary_region = "iad"
+
+[build]
+  build-target = "prod"
+
+[env]
+  PHX_HOST = "goldclaw-mothership.fly.dev"
+  PORT = "4000"
+
+[http_service]
+  internal_port = 4000
+  force_https = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[http_service.checks]]
+  interval = "15s"
+  timeout = "5s"
+  grace_period = "5s"
+  method = "GET"
+  path = "/api/health"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory_mb = 512
