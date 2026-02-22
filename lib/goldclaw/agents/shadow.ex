@@ -1,78 +1,75 @@
 defmodule GoldClaw.Agents.Shadow do
   @moduledoc """
-  Shadow agent for representing edge devices in Mothership.
+  Jido Shadow agent for representing edge devices in Mothership.
+
+  Matches the exact specification from V3.2 Technical Spec, Section 7.
 
   Maintains state for:
   - Agent status (online, offline, error)
-  - Last heartbeat timestamp
-  - System metrics (CPU, memory, disk)
-  - Queue management for outgoing instructions
+  - CPU history for telemetry
+  - Instruction queue coordination
 
-  Shadow agents are lightweight in-memory representations of edge devices.
-  They don't execute code locally — they manage the instruction queue and
-  coordinate with the Fleet Dispatcher.
+  Uses Jido.Agent for AI and Action capabilities.
   """
-  use GenServer
+  use Jido.Agent,
+    name: "shadow_agent",
+    description: "The cloud-brain for a physical IronClaw node",
+    schema: [
+      edge_id: [type: :string, required: true],
+      status: [type: :atom, default: :offline],
+      cpu_history: [type: {:array, :float}, default: []]
+    ]
 
-  defstruct [
-    :agent_id,
-    status: :offline,
-    last_heartbeat: nil,
-    cpu_load: 0.0,
-    memory_mb: 0,
-    disk_gb: 0,
-    current_task: :idle,
-    last_error: nil
-  ]
+  alias Jido.Signal
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, name: opts[:name] || __MODULE__)
+  @impl true
+  def init(_agent, _opts) do
+    # Initialize with offline status and empty CPU history
+    {:ok, Jido.Agent.init_state(__MODULE__, [])}
   end
 
   @impl true
-  def init(_opts) do
-    # Initialize with offline status
-    {:ok, %__MODULE__{}}
-  end
+  def handle_signal(signal, state) do
+    case signal do
+      %{type: "com.cybernetic.agent.heartbeat"} ->
+        handle_heartbeat(signal, state)
 
-  @impl true
-  def handle_cast({:signal, signal}, state) do
-    case signal.type do
-      "com.cybernetic.agent.heartbeat" ->
-        new_state = handle_heartbeat(signal, state)
-        {:noreply, new_state}
-
-      "com.cybernetic.agent.result" ->
-        new_state = handle_result(signal, state)
-        {:noreply, new_state}
+      %{type: "com.cybernetic.agent.result"} ->
+        handle_result(signal, state)
 
       _ ->
-        {:noreply, state}
+        {:ok, state}
     end
   end
 
   # Handle heartbeat from edge agent
   defp handle_heartbeat(signal, state) do
     data = signal.data
+    cpu_load = data["cpu_load"] || 0.0
 
-    new_state = %__MODULE__{
-      state |
-      agent_id: signal.subject,
-      status: data["status"] || :online,
-      last_heartbeat: signal.time,
-      cpu_load: data["cpu_load"] || 0.0,
-      memory_mb: data["memory_mb"] || 0,
-      disk_gb: data["disk_gb"] || 0,
-      current_task: data["current_task"] || :idle,
-      last_error: data["last_error"]
-    }
+    # Update state using Jido.Agent methods
+    state = Jido.Agent.update_field(state, :edge_id, signal.subject)
+    state = Jido.Agent.update_field(state, :status, data["status"] || :online)
+    
+    # Update CPU history
+    current_history = Jido.Agent.get_field(state, :cpu_history)
+    new_history = current_history ++ [cpu_load]
+    
+    # Keep only last 100 CPU readings
+    final_history = if length(new_history) > 100 do
+      Enum.take(new_history, -100)
+    else
+      new_history
+    end
+    state = Jido.Agent.update_field(state, :cpu_history, final_history)
 
     # Log status changes
-    if new_state.status != state.status do
-      IO.puts("[Shadow] Agent #{state.agent_id} status changed: #{state.status} -> #{new_state.status}")
+    old_status = Jido.Agent.get_field(state, :status)
+    if old_status != Jido.Agent.get_field(state, :status) do
+      Jido.Agent.log(state, "Agent status changed: #{old_status} -> #{Jido.Agent.get_field(state, :status)}")
     end
 
-    new_state
+    {:ok, state}
   end
 
   # Handle execution result from edge agent
@@ -89,15 +86,9 @@ defmodule GoldClaw.Agents.Shadow do
       duration_ms: data["duration_ms"]
     })
 
-    # Update agent state
-    new_state = %__MODULE__{
-      state |
-      current_task: :idle,
-      last_error: if(status == "failed", do: data["error"], else: nil)
-    }
+    # Log completion
+    Jido.Agent.log(state, "Instruction #{instruction_id} completed with status: #{status}")
 
-    IO.puts("[Shadow] Instruction #{instruction_id} completed with status: #{status}")
-
-    new_state
+    {:ok, state}
   end
 end

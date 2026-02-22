@@ -22,7 +22,7 @@ defmodule GoldClaw.Fleet.Dispatcher do
         pid = get_or_start_agent(agent_id)
 
         # 3. Forward Signal (Async CAST to prevent backpressure)
-        GenServer.cast(pid, {:signal, signal})
+        Jido.Agent.Server.cast(pid, signal)
 
       _ ->
         Logger.error("Invalid source URN: #{source}")
@@ -40,14 +40,17 @@ defmodule GoldClaw.Fleet.Dispatcher do
   end
 
   defp start_shadow_agent(agent_id) do
-    # Start Shadow agent as GenServer child
-    child_spec = %{
-      id: {Shadow, agent_id},
-      start: {Shadow, :start_link, [[name: via_tuple(GoldClaw.Registry, agent_id)]]},
-      restart: :transient
-    }
-
-    case DynamicSupervisor.start_child(GoldClaw.AgentSupervisor, child_spec) do
+    # Correct Jido 2.0 start_child pattern
+    # CRITICAL FIX: Pass `id` option so Jido knows the agent's identity
+    # This fixes the "name is required" validation error.
+    case DynamicSupervisor.start_child(
+           GoldClaw.AgentSupervisor,
+           {Jido.Agent.Server,
+             agent: Shadow,
+             id: agent_id,  # <--- This populates the required `name` field
+             registry: GoldClaw.Registry
+           }
+         ) do
       {:ok, pid} ->
         Logger.info("Started Shadow agent for #{agent_id}")
         pid
@@ -60,9 +63,5 @@ defmodule GoldClaw.Fleet.Dispatcher do
         Logger.error("Failed to start Shadow agent for #{agent_id}: #{inspect(reason)}")
         raise "Failed to start Shadow agent: #{inspect(reason)}"
     end
-  end
-
-  defp via_tuple(registry, key) do
-    {:via, Registry, {registry, key}}
   end
 end

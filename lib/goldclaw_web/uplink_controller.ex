@@ -6,6 +6,7 @@ defmodule GoldClawWeb.UplinkController do
   - Specversion normalization (1.0 ↔ 1.0.2)
   - HMAC signature verification
   - Signal ingestion and dispatch
+  - Instruction fetch with proper normalization
   """
   import Plug.Conn
 
@@ -41,16 +42,8 @@ defmodule GoldClawWeb.UplinkController do
          {:ok, instruction} <- GoldClaw.Queue.lease_instruction(agent_id) do
 
       # Denormalize from 1.0.2 to 1.0 for edge consumption
-      instruction_map = %{
-        "specversion" => "1.0",
-        "type" => instruction.type,
-        "source" => instruction.source,
-        "subject" => instruction.subject,
-        "id" => instruction.id,
-        "time" => instruction.time,
-        "datacontenttype" => "application/json",
-        "data" => instruction.data
-      } |> denormalize_specversion()
+      # Use Jido.Signal.to_map to properly serialize the signal
+      instruction_map = denormalize_specversion(Jido.Signal.to_map(instruction))
       json(conn, instruction_map)
     else
       :no_instructions ->
@@ -108,11 +101,8 @@ defmodule GoldClawWeb.UplinkController do
   Denormalize CloudEvents 1.0.2 to 1.0 (wire format for edge agents).
   Strips Jido extensions to ensure strict CloudEvents 1.0 compliance.
   """
-  def denormalize_specversion(%{"specversion" => "1.0.2"} = m) do
-    m
-    |> Map.put("specversion", "1.0")
-    |> Map.drop(["jido_agent", "jido_context"])
-  end
+  def denormalize_specversion(%{"specversion" => "1.0.2"} = m),
+    do: Map.put(m, "specversion", "1.0")
   def denormalize_specversion(m), do: m
 
   defp json(conn, data) do
