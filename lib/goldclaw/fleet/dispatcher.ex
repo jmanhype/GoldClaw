@@ -37,8 +37,9 @@ defmodule GoldClaw.Fleet.Dispatcher do
   end
 
   defp start_shadow_agent(agent_id) do
-    # Use Jido.Agent.Server to start child via DynamicSupervisor
-    child_spec = {Jido.Agent.Supervisor, {Shadow, id: agent_id, name: via_tuple(GoldClaw.Registry, agent_id)}}
+    # Start Shadow agent using Jido.Agent.Server
+    child_spec = {Jido.Agent.Supervisor,
+      {GoldClaw.Agents.Shadow, name: "shadow_agent_#{agent_id}"}}
 
     case DynamicSupervisor.start_child(GoldClaw.AgentSupervisor, child_spec) do
       {:ok, pid} ->
@@ -53,9 +54,5 @@ defmodule GoldClaw.Fleet.Dispatcher do
         Logger.error("Failed to start Shadow agent for #{agent_id}: #{inspect(reason)}")
         raise "Failed to start Shadow agent: #{inspect(reason)}"
     end
-  end
-
-  defp via_tuple(registry, key) do
-    {:via, Registry, {registry, key}}
   end
 end

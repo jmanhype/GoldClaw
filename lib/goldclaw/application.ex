@@ -1,5 +1,6 @@
 defmodule GoldClaw.Application do
   @moduledoc false
+
   use Application
 
   def start(_type, _args) do
@@ -17,7 +18,7 @@ defmodule GoldClaw.Application do
       GoldClaw.Filters.Preflight,
 
       # Instruction Queue (GenServer)
-      GoldClaw.Queue,
+      {GoldClaw.Queue, name: GoldClaw.Queue},
 
       # Web Endpoint (Plug.Cowboy)
       {Plug.Cowboy, scheme: :http, plug: GoldClawWeb.Router, options: [port: 4000]}
