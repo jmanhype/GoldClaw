@@ -3,18 +3,27 @@ defmodule GoldClaw.Agents.Shadow do
   Jido Shadow agent for representing edge devices in Mothership.
 
   Matches V3.2 Technical Spec exactly.
+  Uses `:name` field to satisfy Jido.Agent validation.
+  Extracts `:agent_id` from source URN for logging.
+
+  Maintains state for:
+  - Agent status (online, offline, error)
+  - Last heartbeat timestamp
+  - Current task
   """
   use Jido.Agent
 
+  # V3.2 Spec: Extract agent_id from source URN
   defstruct [
-    edge_id: [type: :string, required: true],
-    status: [type: :atom, default: :offline],
-    last_heartbeat: [type: :string],
-    cpu_load: [type: :float, default: 0.0],
-    memory_mb: [type: :integer, default: 0],
-    disk_gb: [type: :float, default: 0.0],
-    current_task: [type: :string, default: nil],
-    last_error: [type: :string, default: nil]
+    :name,           # Required by Jido.Agent
+    :agent_id,       # Derived from signal source
+    :status,
+    :last_heartbeat,
+    :cpu_load,
+    :memory_mb,
+    :disk_gb,
+    :current_task,
+    :last_error
   ]
 
   alias Jido.Signal
@@ -22,7 +31,7 @@ defmodule GoldClaw.Agents.Shadow do
   @impl true
   def init(_agent, _opts) do
     # Initialize with offline status
-    {:ok, %__MODULE__{edge_id: nil}}
+    {:ok, %__MODULE__{name: nil, status: :offline}}
   end
 
   @impl true
@@ -43,8 +52,11 @@ defmodule GoldClaw.Agents.Shadow do
   defp handle_heartbeat(signal, state) do
     data = signal.data
 
+    # Extract agent_id from source URN for logging
+    agent_id = extract_agent_id(signal.source)
+
     # Update state using Jido methods
-    state = Jido.Agent.update_field(state, :edge_id, signal.subject)
+    state = Jido.Agent.update_field(state, :name, agent_id)
     state = Jido.Agent.update_field(state, :status, data["status"] || :online)
     state = Jido.Agent.update_field(state, :last_heartbeat, signal.time)
     state = Jido.Agent.update_field(state, :cpu_load, data["cpu_load"] || 0.0)
@@ -56,7 +68,7 @@ defmodule GoldClaw.Agents.Shadow do
     # Log status changes
     old_status = Jido.Agent.get_field(state, :status)
     if old_status != Jido.Agent.get_field(state, :status) do
-      Jido.Agent.log(state, "Agent status changed: #{old_status} -> #{Jido.Agent.get_field(state, :status)}")
+      Jido.Agent.log(state, "Agent #{agent_id} status changed: #{old_status} -> #{Jido.Agent.get_field(state, :status)}")
     end
 
     {:ok, state}
@@ -80,8 +92,16 @@ defmodule GoldClaw.Agents.Shadow do
     state = Jido.Agent.update_field(state, :current_task, :idle)
     state = Jido.Agent.update_field(state, :last_error, if(status == "failed", do: data["error"], else: nil))
 
-    Jido.Agent.log(state, "Instruction #{instruction_id} completed with status: #{status}")
+    Jido.Agent.log(state, "Agent #{state.name} completed instruction #{instruction_id} with status: #{status}")
 
     {:ok, state}
+  end
+
+  # Extract agent_id from source URN: urn:ironclaw:agent:<UUID>
+  defp extract_agent_id(source) do
+    case String.split(source, ":", trim: true) do
+      ["urn", "ironclaw", "agent", agent_id] -> agent_id
+      _ -> "unknown"
+    end
   end
 end
