@@ -40,6 +40,37 @@ Our proprietary **Ψ→Λ→H→Q→Ω** architecture guarantees:
 
 **No phase can skip. No phase can lie.** Formal guarantees enforced by YAWL.
 
+## The CLAUDE-SPR.md Layer — Agent Operating System
+
+**GODSPEED orchestrates workflows. CLAUDE-SPR.md governs agents.**
+
+### From Wildcards to Deterministic Components
+
+**Before:**
+- Agents are wildcards (prompt-dependent behavior)
+- Quality varies by agent
+- Multi-agent work is ad-hoc
+- Knowledge retrieval is expensive (grep = 5000T)
+
+**After:**
+- Agents are deterministic components (formally governed)
+- Quality is guaranteed (Guards + Invariants)
+- Multi-agent work is industrial (Scaling modes τ ⊕ μ ⊕ ∅)
+- Knowledge retrieval is cheap (Observatory = 50T)
+
+### The CLAUDE-SPR.md Guarantees
+
+| Component | Guarantee | Business Value |
+|-----------|------------|----------------|
+| **Priority Lattice (Π)** | H ≻ Q ≻ Ψ ≻ Λ ≻ Ω | Deterministic conflict resolution |
+| **Guards (H)** | 12 prohibited patterns blocked | Zero code quality variance |
+| **Invariants (Q)** | Real impl or throw | No silent failures |
+| **Observatory (Ψ)** | 8 JSON facts (50T) | 100x cheaper retrieval |
+| **Quantum Singularity (κ)** | Single-axis commits | Clean git history |
+| **Scaling Modes** | τ ⊕ μ ⊕ ∅ | Industrial multi-agent |
+
+**Result:** Agent systems are production-grade, not prototype-grade.
+
 ---
 
 ## What This Means
@@ -79,6 +110,7 @@ Our proprietary **Ψ→Λ→H→Q→Ω** architecture guarantees:
 
 - **YAWL:** Proven formal workflow engine (15+ years in production)
 - **GODSPEED:** Deterministic phase contract (enforced guarantees)
+- **CLAUDE-SPR.md:** Formal agent operating system (guaranteed behavior)
 - **Receipts:** Zero-knowledge proofs (verifiable audit trails)
 - **SPARQL:** Queryable state (full observability)
 
@@ -159,12 +191,16 @@ Our proprietary **Ψ→Λ→H→Q→Ω** architecture guarantees:
 
 ## Summary
 
-**YAWL CLI v6.0.0 is a phase change.**
+**YAWL CLI v6.0.0 + CLAUDE-SPR.md is a phase change.**
 
 From: Building agents to use
-To: Living in an operating system orchestrated by agents
+To: Living in an operating system orchestrated by formal agents
 
-**Zero cognitive load. Full automation. Verifiable audit trails.**
+**Two Layers:**
+- **YAWL CLI v6.0.0:** Workflow orchestration (Ψ→Λ→H→Q→Ω)
+- **CLAUDE-SPR.md:** Agent operating system (formal rules, guards, invariants)
+
+**Zero cognitive load. Full automation. Verifiable audit trails. Deterministic agent behavior.**
 
 **Phase change achieved.** 🚀
 

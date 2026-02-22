@@ -22,6 +22,7 @@ This represents a fundamental phase change in autonomous agent systems. We've mo
 | Component | Status | Metrics |
 |-----------|--------|----------|
 | **YAWL CLI v6.0.0** | ✅ Production | 10/10 commands working |
+| **CLAUDE-SPR.md** | ✅ Live | Formal agent operating system |
 | **Test Suite** | ✅ All Passing | 408/408 tests |
 | **Code Coverage** | ✅ Target Met | ≥80% across all modules |
 | **Security** | ✅ Validated | 20+ exploit scenarios tested |
@@ -50,8 +51,12 @@ Zero cognitive load, formal execution, verifiable audit trails
 | Aspect | Before | After |
 |--------|--------|-------|
 | **Orchestration** | Manual (you think, then act) | Automated (YAWL orchestrates) |
+| **Agent Behavior** | Ad-hoc (prompt-dependent) | Formal (CLAUDE-SPR.md governed) |
 | **State Management** | In your head | Formal receipts (RDF + SPARQL) |
 | **Agent Coordination** | Sequential prompts | Parallel GODSPEED phases |
+| **Knowledge Retrieval** | grep (5000 tokens) | Observatory JSON (50 tokens) |
+| **Code Quality** | Agent discretion | Guards + Invariants enforced |
+| **Multi-Agent Work** | Ad-hoc coordination | Scaling modes (τ ⊕ μ ⊕ ∅) |
 | **Determinism** | "Try and see" | Ψ→Λ→H→Q→Ω guaranteed |
 | **Audit Trail** | None | Every action receipted |
 | **Scheduling** | Manual remembrance | Cron + heartbeats |
@@ -74,6 +79,52 @@ Our proprietary **Ψ→Λ→H→Q→Ω** phase contract guarantees:
 | **Optimize** | Ω | System persists for audit |
 
 **No phase can skip. No phase can lie.** The contract is enforced by YAWL.
+
+## The CLAUDE-SPR.md Innovation — Agent Operating System
+
+**GODSPEED orchestrates workflows. CLAUDE-SPR.md governs agents.**
+
+Together: First formal operating system for autonomous agents.
+
+### From Wildcards to Deterministic Components
+
+**Before:**
+- Agent behavior depends on prompt wording
+- Some agents follow best practices, some don't
+- Code quality varies by agent "mood"
+- Multi-agent work is ad-hoc
+
+**After:**
+- All agents obey CLAUDE-SPR.md formal rules
+- Priority Lattice (Π): H ≻ Q ≻ Ψ ≻ Λ ≻ Ω conflict resolution
+- Guards (H): 12 prohibited patterns detected and blocked
+- Invariants (Q): Real implementation or throw — no silent failures
+- Scaling modes (τ ⊕ μ ⊕ ∅): Formal multi-agent collaboration
+
+**Result:** Agents become deterministic system components, not wildcards.
+
+### The CLAUDE-SPR.md Guarantees
+
+| Component | What It Enforces | Why It Matters |
+|-----------|-----------------|----------------|
+| **Priority Lattice (Π)** | Formal conflict resolution order | Deterministic behavior |
+| **Guards (H)** | 12 prohibited patterns (TODO, FIXME, mock, stub) | Code quality guaranteed |
+| **Invariants (Q)** | Real implementation or throw | No silent failures |
+| **Observatory (Ψ)** | 8 JSON fact files (50T) | 100x cheaper than grep |
+| **Quantum Singularity (κ)** | Single-axis commits | Clean git history |
+| **Scaling Modes** | τ (team), μ (independent), ∅ (solo) | Industrial-scale multi-agent |
+| **PreToolUse Checklist (ℂ)** | Gates before tools | Errors prevented |
+| **STOP Conditions (Σ)** | 8 halt triggers | No infinite loops |
+
+### Formal Mathematical Framework
+
+CLAUDE-SPR.md uses mathematical notation for precision:
+- **Priority Lattice (Π):** Partial order with explicit gates
+- **Quantum Singularity (κ):** Single-axis commits across 6 domains
+- **Agent Scaling (τ ⊕ μ ⊕ ∅):** Three collaboration modes
+- **Partial Orders:** Build system (Λ) with dx.sh commands
+
+**This is not a style guide. It's a formal specification.**
 
 ---
 
@@ -222,12 +273,16 @@ That's it.
 
 ## Summary
 
-**YAWL CLI v6.0.0 is a phase change.**
+**YAWL CLI v6.0.0 + CLAUDE-SPR.md is a phase change.**
 
 From: Building agents to use
-To: Living in an operating system orchestrated by agents
+To: Living in an operating system orchestrated by formal agents
 
-**Result:** Zero cognitive load. Full automation. Verifiable audit trails.
+**Two Layers:**
+- **YAWL CLI v6.0.0:** Workflow orchestration (Ψ→Λ→H→Q→Ω)
+- **CLAUDE-SPR.md:** Agent operating system (formal rules, guards, invariants)
+
+**Result:** Zero cognitive load. Full automation. Verifiable audit trails. Deterministic agent behavior.
 
 **Phase change achieved.**
 

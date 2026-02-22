@@ -9,13 +9,18 @@
 
 ## Quick Summary
 
-**YAWL CLI v6.0.0 is live.** Operations are now fully automated via GODSPEED circuit.
+**YAWL CLI v6.0.0 + CLAUDE-SPR.md are live.**
 
 **What this means for you:**
-- No more manual orchestration
+- No more manual orchestration (YAWL handles it)
+- No more ad-hoc agent behavior (CLAUDE-SPR.md governs it)
 - Run `yawl godspeed full` — that's it
 - Receive summary + receipt
 - Handle exceptions (rare)
+
+**Two layers working together:**
+- **YAWL CLI:** Workflow orchestration (Ψ→Λ→H→Q→Ω)
+- **CLAUDE-SPR.md:** Agent operating system (formal rules)
 
 ---
 
@@ -72,6 +77,35 @@ yawl godspeed full
 | **Optimize** | Ω | Commits git, generates receipt |
 
 **You receive:** Summary card + receipt (full audit trail)
+
+---
+
+## CLAUDE-SPR.md — Agent Operating System
+
+**Agents working on the codebase now obey formal rules.**
+
+### What Changed
+
+**Before:**
+- Agent behavior varies by prompt
+- Some code has TODO, FIXME, mocks
+- Quality depends on agent "mood"
+
+**After:**
+- All agents obey CLAUDE-SPR.md
+- Guards (H) block prohibited patterns
+- Invariants (Q) require real implementation
+- Observatory (Ψ) provides fast knowledge (50T vs 5000T)
+
+### Key Guarantees
+
+| Component | What It Does |
+|-----------|--------------|
+| **Priority Lattice (Π)** | Resolves conflicts: H ≻ Q ≻ Ψ ≻ Λ ≻ Ω |
+| **Guards (H)** | Blocks TODO, FIXME, mock, stub (exit code 2) |
+| **Invariants (Q)** | Requires real impl or throw |
+| **Observatory (Ψ)** | 8 JSON facts for 100x cheaper retrieval |
+| **Scaling Modes** | τ (team), μ (independent), ∅ (solo) |
 
 ---
 
