@@ -1,0 +1,58 @@
+{
+  "name": "instruction_poller",
+  "trigger": {
+    "type": "cron",
+    "schedule": "*/1 * * * *",
+    "jitter_sec": 30
+  },
+  "actions": [
+    {
+      "tool": "http_request",
+      "args": {
+        "method": "GET",
+        "url": "{{env.MOTHERSHIP_URL}}/api/instructions/{{env.AGENT_ID}}",
+        "headers": {
+          "X-Cybernetic-Timestamp": "{{date.timestamp}}",
+          "X-Cybernetic-Nonce": "{{uuid.v4}}",
+          "X-Cybernetic-Signature": "{{crypto.hmac_sha256(env.AGENT_SECRET, date.timestamp + '\\n' + uuid.v4 + '\\n')}}"
+        }
+      }
+    },
+    {
+      "tool": "dynamic_tool_runner",
+      "if": "{{steps.0.status}} == 200",
+      "args": {
+        "payload": "{{steps.0.body}}"
+      }
+    },
+    {
+      "tool": "http_request",
+      "if": "{{steps.0.status}} == 200",
+      "args": {
+        "method": "POST",
+        "url": "{{env.MOTHERSHIP_URL}}/api/signals",
+        "headers": {
+          "X-Cybernetic-Timestamp": "{{date.timestamp}}",
+          "X-Cybernetic-Nonce": "{{uuid.v4}}",
+          "X-Cybernetic-Signature": "{{crypto.hmac_sha256(env.AGENT_SECRET, date.timestamp + '\\n' + uuid.v4 + '\\n' + steps.1.output)}}",
+          "Content-Type": "application/cloudevents+json"
+        },
+        "body": {
+          "specversion": "1.0",
+          "type": "com.cybernetic.agent.result",
+          "source": "urn:ironclaw:agent:{{env.AGENT_ID}}",
+          "subject": "{{steps.0.body.data.instruction_id}}",
+          "id": "{{uuid.v4}}",
+          "time": "{{date.iso8601}}",
+          "data": {
+            "instruction_id": "{{steps.0.body.data.instruction_id}}",
+            "status": "{{steps.1.error ? 'failed' : 'completed'}}",
+            "output": "{{steps.1.output.stdout}}",
+            "error": "{{steps.1.output.stderr}}",
+            "duration_ms": "{{steps.1.output.duration_ms}}"
+          }
+        }
+      }
+    }
+  ]
+}

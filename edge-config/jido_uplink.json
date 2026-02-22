@@ -1,0 +1,43 @@
+{
+  "name": "jido_uplink",
+  "trigger": {
+    "type": "cron",
+    "schedule": "*/1 * * * *",
+    "jitter_sec": 30
+  },
+  "actions": [
+    {
+      "tool": "system_stats",
+      "args": {
+        "format": "flat"
+      }
+    },
+    {
+      "tool": "http_request",
+      "args": {
+        "method": "POST",
+        "url": "{{env.MOTHERSHIP_URL}}/api/signals",
+        "headers": {
+          "X-Cybernetic-Timestamp": "{{date.timestamp}}",
+          "X-Cybernetic-Nonce": "{{uuid.v4}}",
+          "X-Cybernetic-Signature": "{{crypto.hmac_sha256(env.AGENT_SECRET, date.timestamp + '\\n' + uuid.v4 + '\\n' + steps.0.output)}}",
+          "Content-Type": "application/cloudevents+json"
+        },
+        "body": {
+          "specversion": "1.0",
+          "type": "com.cybernetic.agent.heartbeat",
+          "source": "urn:ironclaw:agent:{{env.AGENT_ID}}",
+          "subject": "{{env.AGENT_ID}}",
+          "id": "{{uuid.v4}}",
+          "time": "{{date.iso8601}}",
+          "data": {
+            "cpu_load": "{{steps.0.output.cpu_load}}",
+            "memory_mb": "{{steps.0.output.memory_mb}}",
+            "disk_gb": "{{steps.0.output.disk_gb}}",
+            "status": "{{steps.0.output.status}}"
+          }
+        }
+      }
+    }
+  ]
+}
