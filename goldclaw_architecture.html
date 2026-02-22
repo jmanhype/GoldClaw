@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoldClaw V3.2 Architecture Overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap">
+  <style>
+    :root {
+      --bg-light: #ffffff;
+      --bg-dark: #0f1729;
+      --text-light: #1e293b;
+      --text-dark: #e4e6e7;
+      --border-light: #d1d5db;
+      --border-dark: #374151;
+      --accent-primary: #3b82f6;
+      --accent-secondary: #06b6d4;
+      --accent-tertiary: #8b5cf6;
+      --node-gateway: #f59f0b;
+      --node-filter: #eab308;
+      --node-dispatcher: #f97316;
+      --node-shadow: #f9a825;
+      --node-queue: #fcd34d;
+      --node-edge: #14b8a6;
+      --line-flow: #64748b;
+      --line-edge-cloud: #94a3b8;
+      --bg-card-light: #f8fafc;
+      --bg-card-dark: #1f2937;
+      --surface-light: #ffffff;
+      --surface-dark: #0a0e27;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      line-height: 1.6;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--surface-light);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent-primary);
+      margin: 0 0 2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--border-light);
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .system-diagram {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--bg-card-light);
+      border-radius: 6px;
+      border: 1px solid var(--border-light);
+    }
+
+    .data-flow {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .component-card {
+      background: var(--bg-card-light);
+      border-left: 4px solid var(--node-gateway);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+
+    .component-header {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--accent-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .node-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+    }
+
+    .tech-item {
+      background: var(--surface-light);
+      border-radius: 4px;
+      padding: 0.25rem 0.75rem;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    .protocol-info {
+      background: rgba(59, 130, 246, 0.05);
+      border-radius: 6px;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-left: 4px solid var(--line-flow);
+    }
+
+    .mermaid-diagram {
+      background: var(--surface-light);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-light: #0a0e27;
+        --bg-dark: #1a1f2e;
+        --text-light: #e4e6e7;
+        --text-dark: #d1d5db;
+        --border-light: #374151;
+        --border-dark: #4a5568;
+        --surface-light: #0a0e27;
+        --surface-dark: #141418;
+      }
+
+      body {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+      }
+
+      .container {
+        background: var(--bg-card-dark);
+        border: 1px solid var(--border-dark);
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+      }
+
+      .component-card {
+        background: var(--bg-card-dark);
+        border-left: 4px solid var(--node-gateway);
+      }
+
+      .protocol-info {
+        background: rgba(30, 60, 80, 0.1);
+        border-left: 4px solid var(--line-flow);
+      }
+
+      .mermaid-diagram {
+        background: var(--surface-dark);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🦁 GoldClaw V3.2 Architecture Overview</h1>
+    <p style="font-size: 1.125rem; opacity: 0.9; max-width: 900px; margin-bottom: 2rem;">
+      A cybernetic control loop connecting edge devices (IronClaw agents) with a central orchestrator (Mothership) via the <strong>AMCP protocol</strong> over CloudEvents. The system is designed for <strong>interoperability</strong>, <strong>idempotency</strong>, and <strong>resilience</strong> using Goldrush pre-filtering.
+    </p>
+
+    <div class="data-flow">
+      <h2 class="section-title">Data Flow</h2>
+      <div class="protocol-info">
+        <strong>Protocol:</strong> CloudEvents 1.0 over HTTP<br>
+        <strong>Normalization:</strong> Edge (1.0) ↔ Cloud (1.0.2)<br>
+        <strong>Filtering:</strong> CPU > 90% OR Status ≠ "online"<br>
+        <strong>Idempotency:</strong> Instruction leasing with 300s TTL
+      </div>
+      <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        <div class="component-card">
+          <div class="component-header">
+            <div class="node-icon" style="background: var(--node-edge);">📡</div>
+            <h3>Edge Agent (IronClaw)</h3>
+            <p>Rust/WASM runtime executing tasks in a secure sandbox.</p>
+          </div>
+          <div style="margin-left: 1rem;">
+            <p><strong>Heartbeat →</strong> Sends CPU/memory/status every minute (with jitter)</p>
+            <p><strong>← Instruction Poll</strong></p>
+            <p><strong>Result →</strong> Returns execution output</p>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="component-header">
+            <div class="node-icon" style="background: var(--node-filter);">🔍</div>
+            <h3>Pre-Filter (Goldrush)</h3>
+            <p>Intelligent event filtering to prevent noise.</p>
+          </div>
+          <div style="margin-left: 1rem;">
+            <p><strong>Significant Event</strong> → Dispatch to Fleet Dispatcher</p>
+            <p><strong>Normal Heartbeat</strong> → Drop silently</p>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="component-header">
+            <div class="node-icon" style="background: var(--node-dispatcher);">🚀</div>
+            <h3>Fleet Dispatcher</h3>
+            <p>Routes signals to appropriate Shadow agents.</p>
+          </div>
+          <div style="margin-left: 1rem;">
+            <p><strong>Agent ID Extraction</strong> → Parse "urn:ironclaw:agent:UUID"</p>
+            <p><strong>Get or Start Agent</strong> → Dynamic lookup</p>
+            <p><strong>Forward Signal</strong> → Async GenServer.cast</p>
+          </div>
+        </div>
+        <div class="component-card">
+          <div class="component-header">
+            <div class="node-icon" style="background: var(--node-queue);">📦</div>
+            <h3>Instruction Queue</h3>
+            <p>Manages commands to edge agents.</p>
+          </div>
+          <div style="margin-left: 1rem;">
+            <p><strong>Lease</strong> → Atomic assignment (300s TTL)</p>
+            <p><strong>Reaper</strong> → Expired lease cleanup (60s)</p>
+            <p><strong>Idempotency</strong> → Duplicate result acceptance</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="system-diagram">
+      <h2 class="section-title">System Architecture</h2>
+      <div class="mermaid-diagram">
+<pre class="mermaid">
+graph TD
+    subgraph Edge["Edge Node (IronClaw)"]
+        E_Core["IronClaw Runtime"]
+        E_Routine["Routines Engine"]
+        E_WASM["WASM Sandbox"]
+    end
+
+    subgraph Cloud["The Mothership (Jido/Elixir)"]
+        C_Gateway["Phoenix Gateway"]
+        C_Filter["Goldrush Pre-Filter"]
+        C_Dispatcher["Fleet Dispatcher"]
+        C_Shadow["Jido Shadow Agent"]
+        C_Queue["Instruction Queue"]
+    end
+
+    E_Routine -- "1. Heartbeat (CloudEvents 1.0 over HTTP)" --> C_Gateway
+    C_Gateway -- "2. Normalize (1.0 -> 1.0.2)" --> C_Filter
+    C_Filter -- "3. Significant Event" --> C_Dispatcher
+    C_Filter -- "3. Significant Event" --> C_Queue
+    C_Dispatcher -- "4. Lookup PID" --> C_Shadow
+    C_Dispatcher -- "5. Forward Signal (cast)" --> C_Shadow
+    C_Shadow -- "6. Queue Cmd" --> C_Queue
+    C_Queue -- "8. Lease Cmd" --> E_Routine
+    E_Core -- "9. Execute" --> E_WASM
+    E_Core -- "10. Result" --> C_Gateway
+
+    style Edge fill:#e4e6e7,stroke:#3b82f6
+    style Cloud fill:#1a1f2e,stroke:#06b6d4
+    style C_Gateway stroke:#f97316,stroke-width:2px
+    style C_Filter stroke:#eab308,stroke-width:2px
+    style C_Dispatcher stroke:#f97316,stroke-width:2px
+    style C_Shadow stroke:#f9a825,stroke-width:2px
+    style C_Queue stroke:#fcd34d,stroke-width:2px
+
+    classDef gateway fill:#f59f0b,stroke:#3b82f6
+    classDef filter fill:#eab308,stroke:#3b82f6
+    classDef dispatcher fill:#f97316,stroke:#3b82f6
+    classDef agent fill:#f9a825,stroke:#3b82f6
+    classDef queue fill:#fcd34d,stroke:#3b82f6
+</pre>
+      </div>
+    </div>
+
+    <div class="tech-stack">
+      <h2 class="section-title">Technology Stack</h2>
+      <div class="tech-item">
+        <strong>Mothership:</strong> Elixir/OTP 28<br>
+        <strong>Framework:</strong> Jido 2.0<br>
+        <strong>Event Stream:</strong> Goldrush (develop-elixir branch)<br>
+        <strong>Database:</strong> PostgreSQL (Ecto)<br>
+        <strong>Web:</strong> Plug/Cowboy
+      </div>
+      <div class="tech-item">
+        <strong>Edge:</strong> Rust/WASM<br>
+        <strong>Protocol:</strong> CloudEvents 1.0<br>
+        <strong>Security:</strong> HMAC-SHA256
+      </div>
+      <div class="tech-item">
+        <strong>Deployment:</strong> Fly.io
+      </div>
+    </div>
+
+    <div style="margin-top: 3rem; padding: 1.5rem; background: var(--bg-card-light); border-radius: 8px;">
+      <h2 class="section-title">Implementation Status</h2>
+      <table style="border-collapse: collapse; width: 100%;">
+        <thead>
+          <tr style="background: var(--accent-primary); color: white;">
+            <th style="padding: 0.75rem; text-align: left;">Component</th>
+            <th style="padding: 0.75rem; text-align: left;">Status</th>
+            <th style="padding: 0.75rem; text-align: left;">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Gateway (UplinkController)</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">Specversion normalization (1.0 ↔ 1.0.2), HMAC verification</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Pre-Filter</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">Goldrush event filtering (CPU > 90% OR status ≠ "online")</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Fleet Dispatcher</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">Agent ID extraction, dynamic Shadow agent start/get, async signal dispatch</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Shadow Agent</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">Jido.Agent behavior with name field, signal handling, state management</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Instruction Queue</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">GenServer for leasing, 60s lease reaper, idempotent result recording</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--border-light);">
+            <td style="padding: 1rem; font-family: 'JetBrains Mono'; monospace;">Database (PostgreSQL)</td>
+            <td style="padding: 1rem; color: var(--accent-tertiary);">✅ Complete</td>
+            <td style="padding: 1rem;">Instructions table with unique constraints and atomic leasing</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="padding: 1.5rem; text-align: left;">
+              <strong style="color: var(--accent-primary);">Repository:</strong> <a href="https://github.com/jmanhype/GoldClaw" style="color: var(--accent-primary);">github.com/jmanhype/GoldClaw</a>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="padding: 1rem 0;">
+              <strong style="color: var(--accent-secondary);">Deployment Status:</strong> Ready for Fly.io (all core modules implemented and tested locally)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: var(--protocol-info); border-radius: 6px;">
+      <h2 class="section-title" style="color: var(--accent-primary); margin-top: 0;">📝 Examples Folder</h2>
+      <p style="margin: 0; margin-bottom: 1rem;">
+        Located at <code style="font-family: 'JetBrains Mono'; background: var(--surface-light); padding: 0.25rem 0.75rem; border-radius: 4px;">/Users/speed/.openclaw/workspace/edge-config/</code>, this folder contains:
+      </p>
+      <ul style="margin: 0; padding-left: 1.5rem; line-height: 1.6;">
+        <li><strong>jido_uplink.json</strong> — Heartbeat routine configuration</li>
+        <li><strong>instruction_poller.json</strong> — Instruction polling and execution loop</li>
+        <li><strong>.env.example</strong> — Environment variable template</li>
+      </ul>
+      <p style="margin: 0;">
+        These JSON files demonstrate the <strong>exact configuration format</strong> that the IronClaw edge agent would use to communicate with the GoldClaw Mothership. They include:
+      </p>
+      <ul style="margin: 0 0.5rem; padding-left: 1.5rem; line-height: 1.6;">
+        <li>Cron triggers with <code>jitter_sec</code> to prevent thundering herds</li>
+        <li>HMAC signature headers (X-Cybernetic-Timestamp, X-Cybernetic-Nonce, X-Cybernetic-Signature)</li>
+        <li>CloudEvents 1.0 compliant JSON payloads</li>
+        <li>HTTP POST/GET actions for heartbeats, instruction fetching, and result submission</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
