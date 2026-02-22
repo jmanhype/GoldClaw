@@ -27,7 +27,7 @@ defmodule GoldClaw.MixProject do
     [
       {:jido, "~> 2.0-rc"},
       {:cloudevents, "~> 0.6"},
-      # {:goldrush, "~> 0.1.9"}, # Goldrush disabled for local testing (OTP 28 incompatibility)
+      {:goldrush, github: "DeadZen/goldrush", branch: "develop-elixir"}, # Using Elixir-compatible branch (last updated March 2025)
       {:plug_cowboy, "~> 2.0"},
       {:jason, "~> 1.4"},
       {:plug, "~> 1.15"},
