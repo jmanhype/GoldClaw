@@ -12,6 +12,7 @@ defmodule GoldClaw.Queue do
   """
   use GenServer
   require Logger
+  alias Jido.Signal
 
   defstruct []
 
@@ -36,7 +37,7 @@ defmodule GoldClaw.Queue do
     case GoldClaw.Queue.Instruction.lease(agent_id) do
       {:ok, instruction} ->
         # Convert to Jido Signal
-        signal = %Jido.Signal{
+        signal = Jido.Signal.new(%{
           specversion: "1.0.2",
           type: "com.cybernetic.agent.instruction",
           source: "urn:jido:mothership",
@@ -44,7 +45,7 @@ defmodule GoldClaw.Queue do
           id: generate_id(),
           time: DateTime.utc_now() |> DateTime.to_iso8601(),
           data: instruction.payload
-        }
+        })
         {:ok, signal}
 
       :no_instructions ->

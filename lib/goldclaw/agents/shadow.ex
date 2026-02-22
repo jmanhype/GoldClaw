@@ -2,30 +2,27 @@ defmodule GoldClaw.Agents.Shadow do
   @moduledoc """
   Jido Shadow agent for representing edge devices in Mothership.
 
-  Matches the exact specification from V3.2 Technical Spec, Section 7.
-
-  Maintains state for:
-  - Agent status (online, offline, error)
-  - CPU history for telemetry
-  - Instruction queue coordination
-
   Uses Jido.Agent for AI and Action capabilities.
   """
-  use Jido.Agent,
-    name: "shadow_agent",
-    description: "The cloud-brain for a physical IronClaw node",
-    schema: [
-      edge_id: [type: :string, required: true],
-      status: [type: :atom, default: :offline],
-      cpu_history: [type: {:array, :float}, default: []]
-    ]
+  use Jido.Agent
+
+  defstruct [
+    :agent_id,
+    :status,
+    :last_heartbeat,
+    :cpu_load,
+    :memory_mb,
+    :disk_gb,
+    :current_task,
+    :last_error
+  ]
 
   alias Jido.Signal
 
   @impl true
   def init(_agent, _opts) do
-    # Initialize with offline status and empty CPU history
-    {:ok, Jido.Agent.init_state(__MODULE__, [])}
+    # Initialize with offline status
+    Jido.Agent.init_state(__MODULE__)
   end
 
   @impl true
@@ -45,23 +42,16 @@ defmodule GoldClaw.Agents.Shadow do
   # Handle heartbeat from edge agent
   defp handle_heartbeat(signal, state) do
     data = signal.data
-    cpu_load = data["cpu_load"] || 0.0
 
-    # Update state using Jido.Agent methods
+    # Update agent state using Jido methods
     state = Jido.Agent.update_field(state, :edge_id, signal.subject)
     state = Jido.Agent.update_field(state, :status, data["status"] || :online)
-    
-    # Update CPU history
-    current_history = Jido.Agent.get_field(state, :cpu_history)
-    new_history = current_history ++ [cpu_load]
-    
-    # Keep only last 100 CPU readings
-    final_history = if length(new_history) > 100 do
-      Enum.take(new_history, -100)
-    else
-      new_history
-    end
-    state = Jido.Agent.update_field(state, :cpu_history, final_history)
+    state = Jido.Agent.update_field(state, :last_heartbeat, signal.time)
+    state = Jido.Agent.update_field(state, :cpu_load, data["cpu_load"] || 0.0)
+    state = Jido.Agent.update_field(state, :memory_mb, data["memory_mb"] || 0)
+    state = Jido.Agent.update_field(state, :disk_gb, data["disk_gb"] || 0)
+    state = Jido.Agent.update_field(state, :current_task, data["current_task"] || :idle)
+    state = Jido.Agent.update_field(state, :last_error, data["last_error"])
 
     # Log status changes
     old_status = Jido.Agent.get_field(state, :status)
@@ -86,7 +76,10 @@ defmodule GoldClaw.Agents.Shadow do
       duration_ms: data["duration_ms"]
     })
 
-    # Log completion
+    # Update agent state
+    state = Jido.Agent.update_field(state, :current_task, :idle)
+    state = Jido.Agent.update_field(state, :last_error, if(status == "failed", do: data["error"], else: nil))
+
     Jido.Agent.log(state, "Instruction #{instruction_id} completed with status: #{status}")
 
     {:ok, state}

@@ -1,9 +1,7 @@
 defmodule GoldClaw.Application do
   @moduledoc false
-
   use Application
 
-  @impl true
   def start(_type, _args) do
     children = [
       # Ecto Repository
@@ -21,7 +19,7 @@ defmodule GoldClaw.Application do
       # Instruction Queue (GenServer)
       GoldClaw.Queue,
 
-      # Web Endpoint (Phoenix/Plug)
+      # Web Endpoint (Plug.Cowboy)
       {Plug.Cowboy, scheme: :http, plug: GoldClawWeb.Router, options: [port: 4000]}
     ]
 
