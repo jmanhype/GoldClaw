@@ -1,6 +1,6 @@
 defmodule GoldClaw.Agents.Shadow do
   @moduledoc """
-  Jido 2.0 Shadow agent for representing edge devices in the Mothership.
+  Shadow agent for representing edge devices in Mothership.
 
   Maintains state for:
   - Agent status (online, offline, error)
@@ -12,7 +12,7 @@ defmodule GoldClaw.Agents.Shadow do
   They don't execute code locally — they manage the instruction queue and
   coordinate with the Fleet Dispatcher.
   """
-  use Jido.Agent
+  use GenServer
 
   defstruct [
     :agent_id,
@@ -25,25 +25,29 @@ defmodule GoldClaw.Agents.Shadow do
     last_error: nil
   ]
 
-  alias Jido.Signal
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, name: opts[:name] || __MODULE__)
+  end
 
   @impl true
-  def init(_agent, _opts) do
+  def init(_opts) do
     # Initialize with offline status
     {:ok, %__MODULE__{}}
   end
 
   @impl true
-  def handle_signal(signal, state) do
-    case signal do
-      %{type: "com.cybernetic.agent.heartbeat"} ->
-        handle_heartbeat(signal, state)
+  def handle_cast({:signal, signal}, state) do
+    case signal.type do
+      "com.cybernetic.agent.heartbeat" ->
+        new_state = handle_heartbeat(signal, state)
+        {:noreply, new_state}
 
-      %{type: "com.cybernetic.agent.result"} ->
-        handle_result(signal, state)
+      "com.cybernetic.agent.result" ->
+        new_state = handle_result(signal, state)
+        {:noreply, new_state}
 
       _ ->
-        {:ok, state}
+        {:noreply, state}
     end
   end
 
@@ -65,10 +69,10 @@ defmodule GoldClaw.Agents.Shadow do
 
     # Log status changes
     if new_state.status != state.status do
-      Jido.Agent.log(state, "Agent status changed: #{state.status} -> #{new_state.status}")
+      IO.puts("[Shadow] Agent #{state.agent_id} status changed: #{state.status} -> #{new_state.status}")
     end
 
-    {:ok, new_state}
+    new_state
   end
 
   # Handle execution result from edge agent
@@ -92,8 +96,8 @@ defmodule GoldClaw.Agents.Shadow do
       last_error: if(status == "failed", do: data["error"], else: nil)
     }
 
-    Jido.Agent.log(state, "Instruction #{instruction_id} completed with status: #{status}")
+    IO.puts("[Shadow] Instruction #{instruction_id} completed with status: #{status}")
 
-    {:ok, new_state}
+    new_state
   end
 end

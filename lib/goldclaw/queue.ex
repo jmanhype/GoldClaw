@@ -49,9 +49,6 @@ defmodule GoldClaw.Queue do
 
       :no_instructions ->
         :no_instructions
-
-      {:error, reason} ->
-        {:error, reason}
     end
   end
 

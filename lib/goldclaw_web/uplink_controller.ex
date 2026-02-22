@@ -41,15 +41,20 @@ defmodule GoldClawWeb.UplinkController do
          {:ok, instruction} <- GoldClaw.Queue.lease_instruction(agent_id) do
 
       # Denormalize from 1.0.2 to 1.0 for edge consumption
-      instruction_map = denormalize_specversion(Jido.Signal.to_map(instruction))
+      instruction_map = %{
+        "specversion" => "1.0",
+        "type" => instruction.type,
+        "source" => instruction.source,
+        "subject" => instruction.subject,
+        "id" => instruction.id,
+        "time" => instruction.time,
+        "datacontenttype" => "application/json",
+        "data" => instruction.data
+      } |> denormalize_specversion()
       json(conn, instruction_map)
     else
       :no_instructions ->
         send_resp(conn, 204, "")
-      {:error, reason} ->
-        conn
-        |> put_status(400)
-        |> json(%{error: inspect(reason)})
     end
   end
 
@@ -77,7 +82,7 @@ defmodule GoldClawWeb.UplinkController do
     # TODO: Track nonces to prevent replay attacks
 
     message = "#{timestamp}\n#{nonce}\n#{Jason.encode!(body)}"
-    expected_sig = :crypto.hmac(:sha256, secret, message) |> Base.encode16(case: :lower)
+    expected_sig = :crypto.mac(:hmac, :sha256, secret, message) |> Base.encode16(case: :lower)
 
     if secure_compare(signature, expected_sig) do
       :ok
