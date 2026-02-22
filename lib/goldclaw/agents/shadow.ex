@@ -2,19 +2,19 @@ defmodule GoldClaw.Agents.Shadow do
   @moduledoc """
   Jido Shadow agent for representing edge devices in Mothership.
 
-  Uses Jido.Agent for AI and Action capabilities.
+  Matches V3.2 Technical Spec exactly.
   """
   use Jido.Agent
 
   defstruct [
-    :agent_id,
-    :status,
-    :last_heartbeat,
-    :cpu_load,
-    :memory_mb,
-    :disk_gb,
-    :current_task,
-    :last_error
+    edge_id: [type: :string, required: true],
+    status: [type: :atom, default: :offline],
+    last_heartbeat: [type: :string],
+    cpu_load: [type: :float, default: 0.0],
+    memory_mb: [type: :integer, default: 0],
+    disk_gb: [type: :float, default: 0.0],
+    current_task: [type: :string, default: nil],
+    last_error: [type: :string, default: nil]
   ]
 
   alias Jido.Signal
@@ -22,7 +22,7 @@ defmodule GoldClaw.Agents.Shadow do
   @impl true
   def init(_agent, _opts) do
     # Initialize with offline status
-    Jido.Agent.init_state(__MODULE__)
+    {:ok, %__MODULE__{edge_id: nil}}
   end
 
   @impl true
@@ -43,14 +43,14 @@ defmodule GoldClaw.Agents.Shadow do
   defp handle_heartbeat(signal, state) do
     data = signal.data
 
-    # Update agent state using Jido methods
+    # Update state using Jido methods
     state = Jido.Agent.update_field(state, :edge_id, signal.subject)
     state = Jido.Agent.update_field(state, :status, data["status"] || :online)
     state = Jido.Agent.update_field(state, :last_heartbeat, signal.time)
     state = Jido.Agent.update_field(state, :cpu_load, data["cpu_load"] || 0.0)
     state = Jido.Agent.update_field(state, :memory_mb, data["memory_mb"] || 0)
     state = Jido.Agent.update_field(state, :disk_gb, data["disk_gb"] || 0)
-    state = Jido.Agent.update_field(state, :current_task, data["current_task"] || :idle)
+    state = Jido.Agent.update_field(state, :current_task, data["current_task"] || nil)
     state = Jido.Agent.update_field(state, :last_error, data["last_error"])
 
     # Log status changes

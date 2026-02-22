@@ -1,0 +1,174 @@
+# SPARQL Query: Discover Skills for LLC Reinstatement Process
+# Context: Skills Marketplace - Capability Discovery
+# Test Case: WY-LLC-REINSTATE-001
+
+PREFIX skill: <http://www.yawlfoundation.org/ontologies/skill#>
+PREFIX agent: <http://www.yawlfoundation.org/ontologies/agent#>
+PREFIX mcp: <http://www.yawlfoundation.org/ontologies/mcp#>
+PREFIX godspeed: <http://www.yawlfoundation.org/ontologies/godspeed#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+# Query 1: Skills for Payment Processing
+SELECT ?skill ?skillName ?description ?version ?semanticVersion
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:description ?description ;
+         skill:version ?version ;
+         skill:semanticVersion ?semanticVersion ;
+         skill:category "payment-processing" ;
+         skill:capability ?capability .
+
+  ?capability skill:canProcess "USD"^^xsd:string ;
+             skill:supportsPlatform "stripe", "paypal", "adyen" .
+
+  FILTER(?skillName = "payment-codelet")
+}
+ORDER BY DESC(?semanticVersion)
+
+# Query 2: Skills for External Service Integration (Agent Filing)
+SELECT ?skill ?skillName ?description ?endpoint ?authMethod
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:description ?description ;
+         skill:category "external-service" ;
+         skill:hasEndpoint ?endpoint ;
+         skill:requiresAuth ?authMethod .
+
+  ?endpoint skill:providesService "bestwyomingregisteredagent" ;
+            skill:supportsAction ["file_annual_report", "submit_reinstatement"] .
+
+  ?authMethod skill:type "api-key" .
+}
+ORDER BY ?skillName
+
+# Query 3: Skills for Receipt Generation (GODSPEED Λ Phase)
+SELECT ?skill ?skillName ?description ?phase ?receiptFormat
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:description ?description ;
+         skill:category "receipt-generation" ;
+         godspeed:phase ?phase ;
+         skill:receiptFormat ?receiptFormat .
+
+  FILTER(?phase = "Λ")
+  FILTER(?receiptFormat = "GODSPEED-RECEIPT")
+}
+ORDER BY ?skillName
+
+# Query 4: Skills for Validation & Compliance Checking
+SELECT ?skill ?skillName ?description ?checks ?retryPolicy
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:description ?description ;
+         skill:category "validation" ;
+         skill:performsCheck ?checks ;
+         skill:hasRetryPolicy ?retryPolicy .
+
+  ?checks skill:validates ["annual_report", "reinstatement_status", "entity_status"] .
+
+  ?retryPolicy skill:maxAttempts ?maxAttempts ;
+              skill:backoffMultiplier ?multiplier .
+  FILTER(?maxAttempts >= 3)
+}
+ORDER BY ?skillName
+
+# Query 5: Agents with Required Capabilities
+SELECT ?agent ?agentName ?agentType ?capabilities
+WHERE {
+  ?agent a agent:Agent ;
+         agent:name ?agentName ;
+         agent:type ?agentType ;
+         agent:hasCapability ?capabilities .
+
+  ?capabilities skill:name ?capName .
+  FILTER(?capName IN ("payment-processing", "external-service", "validation", "receipt-generation"))
+}
+ORDER BY ?agentName
+
+# Query 6: MCP Tools for Secretary of State Portal Interaction
+SELECT ?tool ?toolName ?toolDescription ?toolType ?endpoint
+WHERE {
+  ?tool a mcp:Tool ;
+         mcp:name ?toolName ;
+         mcp:description ?toolDescription ;
+         mcp:type ?toolType ;
+         mcp:endpoint ?endpoint .
+
+  FILTER(?toolType = "browser-automation" || ?toolType = "form-filling")
+  FILTER(CONTAINS(STR(?endpoint), "wyobiz.wy.gov"))
+}
+ORDER BY ?toolName
+
+# Query 7: Vertical Pack for Legal/Compliance Workflows
+SELECT ?pack ?packName ?packDescription ?skillsIncluded
+WHERE {
+  ?pack a skill:VerticalPack ;
+         skill:name ?packName ;
+         skill:description ?packDescription ;
+         skill:includesSkill ?skillsIncluded .
+
+  FILTER(?packName = "legal-compliance-pack" || ?packName = "entity-management-pack")
+}
+ORDER BY ?packName
+
+# Query 8: GODSPEED Phase-Compliant Skills
+SELECT ?skill ?skillName ?phase ?deterministic ?auditable
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         godspeed:phase ?phase ;
+         godspeed:deterministic ?deterministic ;
+         godspeed:auditable ?auditable .
+
+  FILTER(?phase IN ("Ψ", "Λ", "H", "Q", "Ω"))
+  FILTER(?deterministic = true)
+  FILTER(?auditable = true)
+}
+ORDER BY ?phase ?skillName
+
+# Query 9: Skills with Dependency Graph (Orchestration)
+SELECT ?skill ?skillName ?dependsOn ?executionOrder
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:dependsOn ?dependsOn ;
+         skill:executionOrder ?executionOrder .
+
+  FILTER(?executionOrder >= 1 && ?executionOrder <= 10)
+}
+ORDER BY ?executionOrder
+
+# Query 10: Skills Marketplace Search (Full Discovery)
+SELECT ?skill ?skillName ?skillCategory ?version ?semanticVersion
+       ?capability ?capabilityName
+       ?author ?maintainer
+       ?rating ?downloadCount
+WHERE {
+  ?skill a skill:Skill ;
+         skill:name ?skillName ;
+         skill:category ?skillCategory ;
+         skill:version ?version ;
+         skill:semanticVersion ?semanticVersion ;
+         skill:capability ?capability ;
+         skill:author ?author ;
+         skill:maintainer ?maintainer .
+
+  ?capability skill:name ?capabilityName .
+
+  OPTIONAL {
+    ?skill skill:rating ?rating ;
+           skill:downloadCount ?downloadCount .
+  }
+
+  # Filter for legal/compliance/relevant skills
+  FILTER(?skillCategory IN ("payment-processing", "external-service", "validation",
+                            "receipt-generation", "compliance", "legal", "workflow"))
+}
+ORDER BY DESC(?rating) DESC(?downloadCount)
+LIMIT 20

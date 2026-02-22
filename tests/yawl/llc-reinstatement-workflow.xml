@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specification xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+  <!-- YAWL Workflow: Wyoming LLC Reinstatement -->
+  <!-- Test Case: WY-LLC-REINSTATE-001 -->
+
+  <specificationID>wy-reinstatement-flow</specificationID>
+  <name>Wyoming LLC Reinstatement Process</name>
+  <version>1.0.0</version>
+  <creationDate>2026-02-21</creationDate>
+
+  <!-- Net Definition -->
+  <net id="reinstatement_net" isRootNet="true">
+    <netInfo>
+      <location>processes/wyoming-reinstatement</location>
+    </netInfo>
+
+    <!-- Initial Condition -->
+    <inputCondition id="start_process">
+      <name>Start Reinstatement</name>
+    </inputCondition>
+
+    <!-- Task: Receive Lapse Notice -->
+    <task id="receive_lapse_notice">
+      <name>Receive Lapse Notice</name>
+      <join code="xor" />
+      <split code="and" />
+      <isAutomatic>true</isAutomatic>
+      <decomposition id="receive_lapse_notice_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Assess Options (Decision Point) -->
+    <task id="assess_options">
+      <name>Assess Reinstatement Options</name>
+      <join code="xor" />
+      <split code="xor" />
+      <isManual>true</isManual>
+      <decomposition id="assess_options_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Request Agent Services -->
+    <task id="request_agent_services">
+      <name>Request Agent Services</name>
+      <join code="xor" />
+      <split code="and" />
+      <isManual>true</isManual>
+      <decomposition id="request_agent_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Process Agent Payment -->
+    <task id="process_agent_payment">
+      <name>Process Agent Payment ($417)</name>
+      <join code="xor" />
+      <split code="and" />
+      <isAutomated>true</isAutomated>
+      <decomposition id="payment_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Agent Filing Submission -->
+    <task id="agent_filing_submission">
+      <name>Agent Filing Submission</name>
+      <join code="and" />
+      <split code="and" />
+      <isExternalService>true</isExternalService>
+      <decomposition id="agent_filing_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Navigate Secretary of State (Self-File Path) -->
+    <task id="navigate_sos">
+      <name>Navigate Secretary of State Portal</name>
+      <join code="xor" />
+      <split code="and" />
+      <isManual>true</isManual>
+      <decomposition id="navigate_sos_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Self Filing Submission -->
+    <task id="self_filing_submission">
+      <name>Self File Reinstatement</name>
+      <join code="and" />
+      <split code="and" />
+      <isManual>true</isManual>
+      <decomposition id="self_filing_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Process Self Payment -->
+    <task id="process_self_payment">
+      <name>Process Self Payment ($204)</name>
+      <join code="and" />
+      <split code="and" />
+      <isAutomated>true</isAutomated>
+      <decomposition id="payment_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Validate Reinstatement -->
+    <task id="validate_reinstatement">
+      <name>Validate Reinstatement</name>
+      <join code="xor" />
+      <split code="xor" />
+      <isAutomated>true</isAutomated>
+      <decomposition id="validation_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Generate Receipt -->
+    <task id="generate_receipt">
+      <name>Generate GODSPEED Receipt</name>
+      <join code="xor" />
+      <split code="and" />
+      <isAutomated>true</isAutomated>
+      <decomposition id="receipt_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Task: Update Registry -->
+    <task id="update_registry">
+      <name>Update Entity Registry</name>
+      <join code="and" />
+      <split code="and" />
+      <isAutomated>true</isAutomated>
+      <decomposition id="update_registry_codelet" isRootDecomposition="true" />
+    </task>
+
+    <!-- Final Condition -->
+    <outputCondition id="end_process">
+      <name>Process Complete</name>
+    </outputCondition>
+
+    <!-- Flow: Start to Receive Lapse -->
+    <flow source="start_process" target="receive_lapse_notice" />
+
+    <!-- Flow: Receive Lapse to Assess Options -->
+    <flow source="receive_lapse_notice" target="assess_options" />
+
+    <!-- Flow: Decision Point - Agent Path -->
+    <flow source="assess_options" target="request_agent_services" predicate="privacy_required == true" />
+    <flow source="request_agent_services" target="process_agent_payment" />
+    <flow source="process_agent_payment" target="agent_filing_submission" />
+    <flow source="agent_filing_submission" target="validate_reinstatement" />
+
+    <!-- Flow: Decision Point - Self File Path -->
+    <flow source="assess_options" target="navigate_sos" predicate="privacy_required == false OR cost_sensitive == true" />
+    <flow source="navigate_sos" target="self_filing_submission" />
+    <flow source="self_filing_submission" target="process_self_payment" />
+    <flow source="process_self_payment" target="validate_reinstatement" />
+
+    <!-- Flow: Validation Branch - Success -->
+    <flow source="validate_reinstatement" target="generate_receipt" predicate="validation_success == true" />
+    <flow source="generate_receipt" target="update_registry" />
+    <flow source="update_registry" target="end_process" />
+
+    <!-- Flow: Validation Branch - Retry -->
+    <flow source="validate_reinstatement" target="agent_filing_submission" predicate="validation_success == false AND retry_count < 3" />
+    <flow source="validate_reinstatement" target="self_filing_submission" predicate="validation_success == false AND path == self_file AND retry_count < 3" />
+
+    <!-- Flow: Validation Branch - Failure -->
+    <flow source="validate_reinstatement" target="end_process" predicate="validation_success == false AND retry_count >= 3" />
+
+  </net>
+
+  <!-- Decomposition: Receive Lapse Notice Codelet -->
+  <decomposition id="receive_lapse_notice_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.interfce.ws.InterfaceB_Lifecycle</codeletName>
+      <params>
+        <param>lapse_detected=true</param>
+        <param>entity_status=inactive</param>
+        <param>lapse_year=2025</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Decomposition: Assess Options Codelet -->
+  <decomposition id="assess_options_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.interfce.ws.InterfaceB_Lifecycle</codeletName>
+      <params>
+        <param>decision_prompt=Choose filing method</param>
+        <param>options=["hire_agent","self_file"]</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Decomposition: Payment Codelet -->
+  <decomposition id="payment_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.interfce.ws.InterfaceB_Lifecycle</codeletName>
+      <params>
+        <param>payment_required=true</param>
+        <param>amount_input=true</param>
+        <param>currency=USD</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Decomposition: Validation Codelet -->
+  <decomposition id="validation_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.interfce.ws.InterfaceB_Lifecycle</codeletName>
+      <params>
+        <param>check_annual_report=true</param>
+        <param>check_reinstatement=true</param>
+        <param>check_entity_status=true</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Decomposition: Receipt Codelet (GODSPEED Λ Phase) -->
+  <decomposition id="receipt_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.ggen.BuildReceipt</codeletName>
+      <params>
+        <param>phase=Λ</param>
+        <param>receipt_prefix=GODSPEED-RECEIPT</param>
+        <param>include_phases=true</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Decomposition: Update Registry Codelet -->
+  <decomposition id="update_registry_codelet" type="Codelet">
+    <codelet>
+      <codeletName>org.yawlfoundation.yawl.engine.interfce.ws.InterfaceB_Lifecycle</codeletName>
+      <params>
+        <param>mark_active=true</param>
+        <param>log_receipt=true</param>
+        <param>update_calendar=true</param>
+      </params>
+    </codelet>
+  </decomposition>
+
+  <!-- Data Variables -->
+  <dataVariables>
+    <variable name="company_name" type="string" />
+    <variable name="entity_number" type="string" />
+    <variable name="entity_status" type="string" />
+    <variable name="privacy_required" type="boolean" />
+    <variable name="cost_sensitive" type="boolean" />
+    <variable name="filing_path" type="string" />
+    <variable name="payment_amount" type="double" />
+    <variable name="payment_confirmed" type="boolean" />
+    <variable name="validation_success" type="boolean" />
+    <variable name="retry_count" type="integer" />
+    <variable name="receipt_id" type="string" />
+    <variable name="filing_date" type="string" />
+  </dataVariables>
+
+  <!-- Extended Attributes for GODSPEED-ggen Integration -->
+  <extendedAttributes>
+    <attribute name="godspeed.phase" value="Ω" />
+    <attribute name="ggen.build.receipt" value="true" />
+    <attribute name="ggen.observation.emit" value="true" />
+    <attribute name="ggen.drift.detect" value="true" />
+  </extendedAttributes>
+
+</specification>

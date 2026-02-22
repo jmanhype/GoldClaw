@@ -1,0 +1,319 @@
+# YAWL Test Case: Wyoming LLC Reinstatement Workflow
+# Test ID: WY-LLC-REINSTATE-001
+# Context: Simulating reinstatement process for lapsed Wyoming LLC
+
+name: wyoming_llc_reinstatement
+description: |
+  End-to-end test case for Wyoming LLC reinstatement process.
+  Covers annual report filing, reinstatement application, and payment processing.
+  Tests both self-filing and agent-filing decision paths.
+
+workflow:
+  id: wy-reinstatement-flow
+  version: 1.0.0
+  engine: yawl
+
+# Test Data
+test_data:
+  company:
+    name: "Test Company LLC"
+    entity_type: "LLC"
+    state: "Wyoming"
+    status: "inactive"
+    lapse_year: 2025
+    entity_number: "2024-000123456"
+
+  registered_agent:
+    name: "Best Wyoming Registered Agent LLC"
+    email: "agent@bestwyomingregisteredagent.com"
+    fee_annual: 50
+
+  fees:
+    annual_report: 163
+    reinstatement: 204
+    agent_fee: 50
+    total_with_agent: 417
+    total_self_file: 204
+
+  timelines:
+    agent_processing_days: "15-20 business days"
+    self_file_varies: true
+
+# Workflow Definition (YAWL XML structure)
+workflow_spec:
+  - task: receive_lapse_notice
+    type: automated
+    triggers:
+      - event: annual_report_lapse
+        condition: status == "inactive" AND lapse_year == current_year
+
+  - task: assess_reinstatement_options
+    type: decision
+    condition: company.status == "inactive"
+    branches:
+      - name: hire_agent
+        condition: privacy_required == true
+        cost: ${fees.total_with_agent}
+        timeline: ${timelines.agent_processing_days}
+        public_record: "agent_name"
+
+      - name: self_file
+        condition: privacy_required == false OR cost_sensitive == true
+        cost: ${fees.total_self_file}
+        timeline: "varies"
+        public_record: "owner_name"
+
+  # Agent-Filing Path
+  - task: request_agent_services
+    type: communication
+    condition: branch == "hire_agent"
+    inputs:
+      - company_name
+      - entity_number
+      - reinstatement_type
+    outputs:
+      - invoice_id
+      - payment_link
+
+  - task: process_agent_payment
+    type: payment
+    condition: branch == "hire_agent"
+    amount: ${fees.total_with_agent}
+    validation:
+      - amount_matches_invoice
+      - payment_confirmed
+
+  - task: agent_filing_submission
+    type: external_service
+    condition: branch == "hire_agent" AND payment_confirmed
+    service: "bestwyomingregisteredagent"
+    actions:
+      - file_annual_report
+      - submit_reinstatement
+    outputs:
+      - filing_receipt
+      - confirmation_number
+
+  # Self-Filing Path
+  - task: navigate_secretary_of_state
+    type: manual
+    condition: branch == "self_file"
+    url: "https://wyobiz.wy.gov/Business/FilingSearch"
+    steps:
+      - search_company_by_name
+      - click_file_reinstatement
+      - complete_reinstatement_form
+      - sign_application
+
+  - task: self_filing_submission
+    type: manual
+    condition: branch == "self_file"
+    requirements:
+      - owner_signature_required: true
+      - public_record_disclosure: true
+
+  - task: process_self_payment
+    type: payment
+    condition: branch == "self_file"
+    amount: ${fees.total_self_file}
+    processor: "wyoming_secretary_of_state"
+
+  # Common Validation Path
+  - task: validate_reinstatement
+    type: validation
+    condition: submission_complete
+    checks:
+      - annual_report_filed: true
+      - reinstatement_approved: true
+      - entity_status: "active"
+    failure_handling:
+      retry_policy: "exponential_backoff"
+      max_retries: 3
+
+  - task: generate_receipt
+    type: automated
+    condition: reinstatement_approved
+    outputs:
+      - receipt_number
+      - filing_date
+      - effective_date
+      - entity_status
+    format: "GODSPEED-RECEIPT-Λ-YYYY-MM-DD-XXXXX"
+
+  - task: update_registry
+    type: automated
+    condition: receipt_generated
+    actions:
+      - mark_entity_active
+      - log_filing_receipt
+      - update_compliance_calendar
+
+# Test Scenarios
+test_scenarios:
+  - scenario_id: SCENARIO-001
+    name: "Agent-filing with privacy protection"
+    inputs:
+      privacy_required: true
+      cost_sensitive: false
+    expected_path: hire_agent
+    expected_outcome:
+      - agent_submits_filing
+      - owner_name_private
+      - receipt_generated
+      - entity_status: "active"
+    validation:
+      - payment_processed
+      - filing_receipt_received
+      - public_record_shows_agent_not_owner
+
+  - scenario_id: SCENARIO-002
+    name: "Self-filing for cost savings"
+    inputs:
+      privacy_required: false
+      cost_sensitive: true
+    expected_path: self_file
+    expected_outcome:
+      - owner_signs_application
+      - owner_name_public
+      - receipt_generated
+      - entity_status: "active"
+    validation:
+      - payment_processed_direct
+      - public_record_shows_owner_signature
+      - cost_savings: ${fees.total_with_agent - fees.total_self_file}
+
+  - scenario_id: SCENARIO-003
+    name: "Reinstatement failure retry"
+    inputs:
+      privacy_required: true
+      payment_confirmed: true
+      filing_fails: true
+    expected_path: hire_agent
+    expected_outcome:
+      - first_submission_fails
+      - automatic_retry_triggered
+      - retry_succeeds
+    validation:
+      - retry_attempts: 2
+      - receipt_generated_after_retry
+
+# GODSPEED Phase Mapping (for ggen integration)
+godspeed_phases:
+  - phase: "Ψ" (Psi - Perception)
+    task: receive_lapse_notice
+    outputs: lapse_detected
+
+  - phase: "Λ" (Lambda - Build)
+    task: assess_reinstatement_options
+    outputs: decision_made
+
+  - phase: "H" (Eta - Deploy)
+    task: agent_filing_submission OR self_filing_submission
+    outputs: filed
+
+  - phase: "Q" (Theta - Observe)
+    task: validate_reinstatement
+    outputs: validation_complete
+
+  - phase: "Ω" (Omega - Optimize)
+    task: generate_receipt AND update_registry
+    outputs: process_complete
+
+# Receipt Generation Schema (Λ phase)
+receipt_schema:
+  type: BuildReceipt
+  phase: "Λ"
+  fields:
+    receipt_id:
+      type: string
+      format: "GODSPEED-WY-LLC-{YYYYMMDD}-{entity_number}-{timestamp}"
+
+    filing_type:
+      type: enum
+      values: [agent_filing, self_filing]
+
+    company_details:
+      name: string
+      entity_number: string
+      filing_date: ISO8601
+      effective_date: ISO8601
+
+    payment:
+      amount: number
+      currency: "USD"
+      payment_method: string
+      transaction_id: string
+
+    privacy:
+      owner_name_public: boolean
+      public_record_shows: string
+
+    validation:
+      annual_report_filed: boolean
+      reinstatement_approved: boolean
+      entity_status: string
+
+    godspeed_phases_completed:
+      psi: timestamp
+      lambda: timestamp
+      eta: timestamp
+      theta: timestamp
+      omega: timestamp
+
+# Test Assertions
+assertions:
+  - name: "Agent filing protects privacy"
+    scenario: SCENARIO-001
+    assert:
+      - response.receipt.privacy.owner_name_public == false
+      - response.receipt.privacy.public_record_shows == "agent_name"
+
+  - name: "Self filing costs $213 less"
+    scenario: SCENARIO-002
+    assert:
+      - response.receipt.payment.amount == fees.total_self_file
+      - response.receipt.filing_type == "self_filing"
+
+  - name: "Reinstatement marks entity active"
+    scenario: [SCENARIO-001, SCENARIO-002, SCENARIO-003]
+    assert:
+      - response.receipt.validation.entity_status == "active"
+
+  - name: "All GODSPEED phases completed"
+    scenario: [SCENARIO-001, SCENARIO-002, SCENARIO-003]
+    assert:
+      - response.receipt.godspeed_phases_completed.psi != null
+      - response.receipt.godspeed_phases_completed.lambda != null
+      - response.receipt.godspeed_phases_completed.eta != null
+      - response.receipt.godspeed_phases_completed.theta != null
+      - response.receipt.godspeed_phases_completed.omega != null
+
+# Execution Parameters
+execution:
+  timeout: "30 days"
+  retry_policy:
+    max_attempts: 3
+    backoff_multiplier: 2
+    initial_delay: "1 hour"
+
+  monitoring:
+    track_metrics:
+      - filing_duration
+      - payment_processing_time
+      - validation_success_rate
+      - retry_count
+
+    alerts:
+      - filing_exceeds_timeline
+      - payment_failed
+      - validation_failed
+      - entity_not_restored
+
+# Post-Test Cleanup
+cleanup:
+  - task: rollback_test_data
+    condition: test_complete
+    actions:
+      - reset_company_status
+      - clear_payment_records
+      - archive_test_receipts
